@@ -3,35 +3,28 @@ package com.example.studyktflow.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.studyktflow.R
+import com.example.studyktflow.databinding.ActivityMainBinding
 import com.example.studyktflow.ui.detail.ArticleDetailActivity
 import com.example.studyktflow.ui.favorites.FavoritesActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     
     private val viewModel: MainViewModel by viewModels()
-    
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var progressBar: ProgressBar
-    private lateinit var fabFavorites: FloatingActionButton
-    
+    private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: ArticleAdapter
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         title = getString(R.string.home)
         
         initViews()
@@ -42,16 +35,11 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun initViews() {
-        recyclerView = findViewById(R.id.recyclerView)
-        swipeRefresh = findViewById(R.id.swipeRefresh)
-        progressBar = findViewById(R.id.progressBar)
-        fabFavorites = findViewById(R.id.fabFavorites)
-        
-        swipeRefresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             viewModel.loadArticles(refresh = true)
         }
         
-        fabFavorites.setOnClickListener {
+        binding.fabFavorites.setOnClickListener {
             startActivity(Intent(this, FavoritesActivity::class.java))
         }
     }
@@ -72,8 +60,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
     }
     
     private fun observeViewModel() {
@@ -81,22 +69,22 @@ class MainActivity : AppCompatActivity() {
             viewModel.articleListState.collect { state ->
                 when (state) {
                     is ArticleListState.Idle -> {
-                        progressBar.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
+                        binding.progressBar.visibility = View.GONE
+                        binding.swipeRefresh.isRefreshing = false
                     }
                     is ArticleListState.Loading -> {
-                        if (!swipeRefresh.isRefreshing) {
-                            progressBar.visibility = View.VISIBLE
+                        if (!binding.swipeRefresh.isRefreshing) {
+                            binding.progressBar.visibility = View.VISIBLE
                         }
                     }
                     is ArticleListState.Success -> {
-                        progressBar.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
+                        binding.progressBar.visibility = View.GONE
+                        binding.swipeRefresh.isRefreshing = false
                         adapter.submitList(state.articles)
                     }
                     is ArticleListState.Error -> {
-                        progressBar.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
+                        binding.progressBar.visibility = View.GONE
+                        binding.swipeRefresh.isRefreshing = false
                         Toast.makeText(this@MainActivity, state.message, Toast.LENGTH_SHORT).show()
                     }
                 }

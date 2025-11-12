@@ -50,7 +50,7 @@ class ArticleRepository {
         }
     }.flowOn(Dispatchers.IO)
     
-    fun getCollectList(page: Int): Flow<Result<List<Article>>> = flow {
+    fun getCollectList(page: Int): Flow<Result<List<Article>>> = f  low {
         try {
             val response = apiService.getCollectList(page)
             if (response.errorCode == 0 && response.data != null) {

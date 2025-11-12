@@ -2,36 +2,28 @@ package com.example.studyktflow.ui.detail
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.studyktflow.R
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.studyktflow.databinding.ActivityArticleDetailBinding
 import kotlinx.coroutines.launch
 
 class ArticleDetailActivity : AppCompatActivity() {
     
     private val viewModel: ArticleDetailViewModel by viewModels()
-    
-    private lateinit var tvTitle: TextView
-    private lateinit var tvAuthor: TextView
-    private lateinit var tvTime: TextView
-    private lateinit var tvChapter: TextView
-    private lateinit var tvDesc: TextView
-    private lateinit var fabCollect: FloatingActionButton
-    private lateinit var progressBar: ProgressBar
-    
+    private lateinit var binding: ActivityArticleDetailBinding
+
     private var articleId = 0
     private var articleOriginId = 0
     private var isCollected = false
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_article_detail)
-        
+        binding = ActivityArticleDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         title = getString(R.string.article_detail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         
@@ -41,16 +33,9 @@ class ArticleDetailActivity : AppCompatActivity() {
     }
     
     private fun initViews() {
-        tvTitle = findViewById(R.id.tvTitle)
-        tvAuthor = findViewById(R.id.tvAuthor)
-        tvTime = findViewById(R.id.tvTime)
-        tvChapter = findViewById(R.id.tvChapter)
-        tvDesc = findViewById(R.id.tvDesc)
-        fabCollect = findViewById(R.id.fabCollect)
-        progressBar = findViewById(R.id.progressBar)
-        
-        fabCollect.setOnClickListener {
-            viewModel.toggleCollect(articleOriginId, isCollected)
+        binding.fabCollect.setOnClickListener {
+            // Pass both article id and originId so ViewModel can call the correct API
+            viewModel.toggleCollect(articleId, articleOriginId, isCollected)
         }
     }
     
@@ -59,17 +44,17 @@ class ArticleDetailActivity : AppCompatActivity() {
         articleOriginId = intent.getIntExtra("article_origin_id", articleId)
         isCollected = intent.getBooleanExtra("article_collect", false)
         
-        tvTitle.text = intent.getStringExtra("article_title")
-        tvAuthor.text = getString(R.string.author, intent.getStringExtra("article_author"))
-        tvTime.text = getString(R.string.time, intent.getStringExtra("article_date"))
-        tvChapter.text = getString(R.string.chapter, intent.getStringExtra("article_chapter"))
-        tvDesc.text = intent.getStringExtra("article_desc")
-        
+        binding.tvTitle.text = intent.getStringExtra("article_title")
+        binding.tvAuthor.text = getString(R.string.author, intent.getStringExtra("article_author"))
+        binding.tvTime.text = getString(R.string.time, intent.getStringExtra("article_date"))
+        binding.tvChapter.text = getString(R.string.chapter, intent.getStringExtra("article_chapter"))
+        binding.tvDesc.text = intent.getStringExtra("article_desc")
+
         updateCollectButton()
     }
     
     private fun updateCollectButton() {
-        fabCollect.isSelected = isCollected
+        binding.fabCollect.isSelected = isCollected
     }
     
     private fun observeViewModel() {
@@ -77,13 +62,13 @@ class ArticleDetailActivity : AppCompatActivity() {
             viewModel.collectState.collect { state ->
                 when (state) {
                     is CollectState.Idle -> {
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                     }
                     is CollectState.Loading -> {
-                        progressBar.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.VISIBLE
                     }
                     is CollectState.Success -> {
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         isCollected = state.collected
                         updateCollectButton()
                         val message = if (isCollected) {
@@ -94,7 +79,7 @@ class ArticleDetailActivity : AppCompatActivity() {
                         Toast.makeText(this@ArticleDetailActivity, message, Toast.LENGTH_SHORT).show()
                     }
                     is CollectState.Error -> {
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         Toast.makeText(this@ArticleDetailActivity, state.message, Toast.LENGTH_SHORT).show()
                     }
                 }

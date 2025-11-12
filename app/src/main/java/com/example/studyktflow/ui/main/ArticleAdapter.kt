@@ -1,12 +1,10 @@
 package com.example.studyktflow.ui.main
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.studyktflow.R
 import com.example.studyktflow.data.model.Article
+import com.example.studyktflow.databinding.ItemArticleBinding
 
 class ArticleAdapter(
     private val onItemClick: (Article) -> Unit
@@ -21,9 +19,12 @@ class ArticleAdapter(
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_article, parent, false)
-        return ArticleViewHolder(view)
+        val binding = ItemArticleBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ArticleViewHolder(binding)
     }
     
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
@@ -32,19 +33,15 @@ class ArticleAdapter(
     
     override fun getItemCount(): Int = articles.size
     
-    inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
-        private val tvAuthor: TextView = itemView.findViewById(R.id.tvAuthor)
-        private val tvTime: TextView = itemView.findViewById(R.id.tvTime)
-        private val tvChapter: TextView = itemView.findViewById(R.id.tvChapter)
-        
+    inner class ArticleViewHolder(private val binding: ItemArticleBinding) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(article: Article) {
-            tvTitle.text = article.title
-            tvAuthor.text = article.author.ifEmpty { article.shareUser }
-            tvTime.text = article.niceDate
-            tvChapter.text = "${article.superChapterName} / ${article.chapterName}"
-            
-            itemView.setOnClickListener {
+            binding.tvTitle.text = article.title
+            binding.tvAuthor.text = article.author.ifEmpty { article.shareUser }
+            binding.tvTime.text = article.niceDate
+            binding.tvChapter.text = "${article.superChapterName} / ${article.chapterName}"
+
+            binding.root.setOnClickListener {
                 onItemClick(article)
             }
         }

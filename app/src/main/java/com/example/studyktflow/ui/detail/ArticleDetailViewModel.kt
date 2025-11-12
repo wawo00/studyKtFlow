@@ -22,12 +22,17 @@ class ArticleDetailViewModel : ViewModel() {
     private val _collectState = MutableStateFlow<CollectState>(CollectState.Idle)
     val collectState: StateFlow<CollectState> = _collectState.asStateFlow()
     
-    fun toggleCollect(articleId: Int, currentCollectState: Boolean) {
+    // Accept both the article id and the originId because the backend uses different ids
+    // for collect and uncollect endpoints: collect uses the article `id`, while
+    // uncollect (from collect list) uses the `originId`.
+    fun toggleCollect(articleId: Int, originId: Int, currentCollectState: Boolean) {
         viewModelScope.launch {
             _collectState.value = CollectState.Loading
             val flow = if (currentCollectState) {
-                repository.uncollectArticle(articleId)
+                // When currently collected, call uncollect with originId
+                repository.uncollectArticle(originId)
             } else {
+                // When not collected, call collect with the article id
                 repository.collectArticle(articleId)
             }
             
