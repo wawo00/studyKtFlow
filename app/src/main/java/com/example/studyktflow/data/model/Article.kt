@@ -12,7 +12,7 @@ data class ArticleListResponse(
 
 data class Article(
     val id: Int,
-    val originId: Int = id,
+    val originId: Int,
     val title: String,
     val link: String,
     val author: String,
