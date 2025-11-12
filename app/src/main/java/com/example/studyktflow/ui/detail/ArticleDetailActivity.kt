@@ -50,7 +50,9 @@ class ArticleDetailActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         
         fabCollect.setOnClickListener {
-            viewModel.toggleCollect(articleOriginId, isCollected)
+            // Use articleId for collecting, articleOriginId for uncollecting
+            val idToUse = if (isCollected) articleOriginId else articleId
+            viewModel.toggleCollect(idToUse, isCollected)
         }
     }
     
