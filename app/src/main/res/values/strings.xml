@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StudyKtFlow</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="no_account">没有账号？立即注册</string>
+    <string name="have_account">已有账号？立即登录</string>
+    <string name="home">首页</string>
+    <string name="article_detail">文章详情</string>
+    <string name="my_favorites">我的收藏</string>
+    <string name="collect">收藏</string>
+    <string name="uncollect">取消收藏</string>
+    <string name="loading">加载中...</string>
+    <string name="login_success">登录成功</string>
+    <string name="register_success">注册成功</string>
+    <string name="collect_success">收藏成功</string>
+    <string name="uncollect_success">取消收藏成功</string>
+    <string name="please_input_username">请输入用户名</string>
+    <string name="please_input_password">请输入密码</string>
+    <string name="password_not_match">两次密码输入不一致</string>
+    <string name="author">作者：%s</string>
+    <string name="time">时间：%s</string>
+    <string name="chapter">分类：%s</string>
+</resources>
